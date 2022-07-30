@@ -1,0 +1,273 @@
+Login Page
+Create Account
+	User can create an account here w/ email/pass.
+	Information is stored in SQL DB -> PKID,Col1(email),Col2(pass) etc
+Login
+	User can log into their account w/ email/pass.
+	Information is retrieved from SQL DB
+Reset Password
+	User can reset their account password w/ email containing generated URL to site w/ permission to overwrite SQL DB Col2(pass) 
+
+
+Player Logs In
+Assets and Data to Load
+Player data loaded from SQL DB. This should include:
+Player info - Guild or other affiliations
+Units
+Resources
+Town Progression
+World/Story Progression
+
+All info should be represented via UI.
+
+How can we store all of this information and make sure that it is only retrievable by the user? Do we have a million columns for each account? Do we have a separate SQL DB for each of these sections in the game? One DB for account info, resources, town/world progression, then one for units? Then one for inventory?
+
+Is it like a huge JSON? 
+
+Account Arthur {
+Town: {
+Location one: true, level 3, timeReqdToUpgrade,
+Location two: true, level 1, timeReqdToUpgrade,
+Location three: false, null, null
+},
+Units: {
+Slot one: {
+Name: Artekka,
+Blood: null,
+SkillOne: skill ID - Pulls info from Skill DB?,
+SkillTwo:
+Job: Bard,
+Level: 5,
+Exp: [current, reqdToLevel, carryOver],
+HP: [current, maxHP],
+LP: [current, maxLP],
+Atk: [this.Str + weaponOne.Atk],
+Armor: [this.Def + Armor.Def + Accessory.Def],
+Str: 10,
+Def: 10,
+Tech, 15,
+Agi: 25,
+Luck: 15,
+Age: 20,
+Gender: Male,
+weaponOne: item ID (ie 47 = Granite Katana and pulls stats from Item DB? Atk, Hit or Accuracy, Endurance),
+weaponOne End: [weaponOne.end - uses (this would be incremented each swing)],
+weaponTwo: item ID,
+Armor: item ID w/ stats for Def, Eva, MagDef,
+Accessory: item ID w/ “effect”,
+Item: literally item ID
+}, etc, etc,
+}
+
+Gameplay Loop
+Town
+
+
+
+Town progress like farmville - Look at Ninja Village game for potential real-time commerce and town building
+
+Some buildings have additional functions that must be built into them such as - Warrior Hut: Breeding units via male and female copulation. Uses genetic inheritance patterns to determine gender, job, starting stats, and blood. Possibly appearance.
+
+All formulas and stat calculations reverse engineered here: TaSho Einherjar Growth Calculator
+
+Resources tick globally every 5 or 10 minutes depending on server stability. Maybe a global call that forces a calculation refresh at predetermined times?
+
+All actions here must update the SQL db. Everything here is local scope except Chat which should access a global chat server w/ permissions for Guild and Private.
+
+Example of secondary building functions:
+
+
+
+
+
+Units
+
+
+Player has a stable of units, each with unique names, jobs, stats, abilities, and equipment. Character stats decrease with age and LP (Life Points/How many times they can die)
+
+Unit Trees
+Peasant Spearman
+	Shield Spearman
+	Lu Bu
+
+Items
+
+
+Database of weapons, armors, accessories, items, and materials for the account. Used to produce items. Huge item ID list?
+
+
+
+Cold Sleep
+Premium feature that allows you to freeze a character so that they do not age.
+
+
+Item Production
+
+
+Able to produce items based on number of variables such as high enough blacksmith or weaving, ingredients met, and progressed far enough in game
+
+
+Expeditions
+
+
+Units are selected, up to a limit of 10, to go on expedition across the World Map
+
+World Map
+
+
+
+Player is able to select a large geographic area on the World Map to travel to. Depending on the distance, a predetermined number of days will pass due to travel time. Upon arriving, the user will appear on a sub map that has a chance to initiate a battle that has scripted variances for unit spawns and rewards.
+
+
+
+
+Battle Preparation
+
+
+
+
+Player is able to select up to 5 of 10 expedition units to participate in battle.
+
+
+Battle Sequence
+
+
+
+
+Typical tactical RPG style combat w/ resistances, vulnerabilities, and directional combat. Upon completion, Exp and items are received. Would like this to be an optional multiplayer aspect of the game.
+
+Each battle location will consist of a 64x64 parent map and each battle will select a 24x24 grid to generate from the parent map. Player and AI spawn locations will change for each battle. AI spawned will come from a pool as well as items.
+
+Example of how to implement this via RNG tables:
+
+Map 1 = 64x64 parent map
+	Encounter Number = 1-10 and each encounter number has a dedicated child map assigned to it from the parent 64x64 map. Do the same for enemy encounter and spawn data.
+
+
+—---
+Lineage of your family
+
+–
+—---
+Communal Aspects
+
+
+At the “Hub” of the game, players can interact in a non real time fashion such as using the Auction House (Market) to buy and sell different materials and equipments as well as the Black Market which periodically updates its wares. Resource trading may be done at a rate that changes periodically as well.
+
+The Bar is a place for the player to find things like quests for the game or for events.
+
+The Temple is where Guild functions are done - Creation, disbanding, donations, buffs, etc.
+
+The Arena is for 1v1 multiplayer battles.
+
+There are also Guild Wars involving the defense and attack of castles that yield rewards based on different scoring variables. All guild members receive rewards for the hard work of a few folks. Traditionally this was a Player vs AI interaction but this could be a potential multiplayer aspect. Each player was able to house one unit in a building in town that allowed for that unit to randomly be used as Support in these battles. Perhaps make this selectable among 3 or 5 of the list of units available for Support.
+
+Programming
+Build chat server w/ socket.IO or some Node package
+
+For multiplayer interaction on battle screens - Use Colyseus framework to generate a silent room and provide access to player group and confirm synchronized actions in game. Must be a turn based system where players only have access to their units when it is their unit’s turn.
+
+Generate pathing algorithm
+
+Basic enemy AI with pathing that will attack units based on different criteria
+
+Have SQL DB w/ a main “Account” table and then for each section of the game/account, have a separate table w/ foreign keys
+
+Make object for every item in table
+
+SQL Relationships:
+1 to 1 - 
+1 to Many - 1 Account to Many transactions
+Many to 1 - Many players contributing to 1 global event quest
+Testing
+Each individual component can be built and tested for functionality.
+
+Login Page -> Creating an account and saving those credentials to the SQL DB.
+
+Login Page -> Logging in with stored values that are retrieved and visually represented. You cannot log out ever.
+
+Town -> Generate progression and confirm data is saving and retrievable upon login
+
+Units -> Create a unit, save to SQL DB, retrieve unit list upon login - Should have this unit.
+Units -> Delete a unit, save to SQL DB, retrieve unit list upon login - Should not have the deleted unit.
+
+
+Unit Age/Wisdom/Degradation
+As a unit gets older, higher probability of gaining better skill
+Statistics degrade slowly as unit ages, lower chance to breed
+
+
+Gannt Chart
+
+UX/UI
+Simple and easy and fun player experience
+Storyboarding
+
+—-------------------------
+Numa Notes
+
+Project Goals:
+As faithful a representation of the Einherjar The Vikings Blood Gaming Experience
+Web Based Tactical Role-playing game
+Unit types (defense, offense, ranged, magic)
+Unit development trees (units gain experience and evolve/rank up to new unit type)
+Terrain Combat relationship
+Attribute/Characteristic triangle relationship / rock vs paper vs scissors
+User Owned Space
+Farmville like experience
+Structures in area provide bonus
+NPC / Larger location with Market, Bar, Temple, Arena
+World / Map exploration / adventure fighting
+Select macro zone for dungeon crawl experience
+Varies in difficulty 1-x
+Micro zone is the dungeon crawl
+The farther you progress the better the rewards
+Character development / breeding system
+Characters “birthed” and given RNG job / attribute / skills
+Characters level up with experience earned
+Characters can pair up and birth new “characters”
+Multiplayer PVP / PVE (Coop)
+Guild vs Guild
+—---------------------
+Combat interaction document
+Sword
+2h
+Offensive
+Defensive
+Sword & Board
+Offensive
+Defensive
+Dual wielder
+Offensive
+Defensive
+Spear
+Axe
+Bow
+Mage
+Skills
+Job Trees
+Effects
+Bloodlines (breeding related)
+In combat effects (combat related)
+Items / Gear / Weapons
+Terrain
+—---------------------
+Character Breeding document
+Marriage
+Procreation
+Birth and Stats
+Raising and Skill acquisition
+—---------------------
+Town or Mansion/Compound Development document
+Structures
+Bonuses
+Items / Gear / Weapons
+Expansion
+—---------------------
+Post town to World Map to Dungeon Crawling to starting the Tactical Role-Playing Game document
+What represents “you”
+Movement
+Transitioning from world / zone map
+
+
+

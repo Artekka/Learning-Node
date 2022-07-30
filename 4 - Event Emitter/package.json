@@ -1,0 +1,20 @@
+{
+  "name": "learning-node-npm-event-emitters",
+  "version": "1.0.0",
+  "description": "In this module I'm learning how to utilize event emitters",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index",
+    "build": "node index"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^2.29.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "learning-node-npm",
+  "version": "1.0.0",
+  "description": "I am learning how to use NPM and  I am trying to experience everything from start to finish.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index",
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^2.29.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
