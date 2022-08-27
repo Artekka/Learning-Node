@@ -27,8 +27,11 @@ const {add,subtract,multiply,divide} = require('./math')
 console.log("I am dividing 28 by 4 and the result is " + divide(28,4) + ".")
 console.log("I am adding 12 to 9 and the result is " + add(12,9) + ".")
 
+// Random, but to rewrite the above with template literals, which I recently learned about,
+// I could wrong this:
 
-
+console.log(`I am dividing 28 by 4 and the result is ${divide(28,4)}.`)
+console.log(`I am adding 12 to 9 and the result is ${add(12,9)}.`)
 
 
 // //os
