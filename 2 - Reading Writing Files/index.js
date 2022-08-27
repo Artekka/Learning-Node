@@ -1,7 +1,6 @@
 //I'm gonna bring in the Filesystem module which is a common core module
 
-//const fs = require('fs')
-
+const fs = require('fs')
 const fsPromises = require('fs').promises
 const path = require('path')
 
@@ -85,8 +84,12 @@ I just appended data to this text file that I just created.
 */
 
 //Using promises to enable async and await so we don't have callback heck
+// This is the big brain way, that I'm aware of right now, to do something like
+// this. I have an exampel below of a Blocking vs Non-Blocking way to read data/files
 
-const fileOps = async () => {
+// Uncomment this section to rename the file rpg_doc.txt to fsPromise_write.txt
+
+/* const fileOps = async () => {
     try {
         const data = await fsPromises.readFile(path.join(__dirname, 'files', 'rpg_doc.txt'), 'utf-8');
         console.log(data);
@@ -111,6 +114,38 @@ const fileOps = async () => {
 //Now I call this function
 
 fileOps()
+*/
+
+// An example of a Blocking/synchronous approach, considered trash
+// All of these lines will only happen once the previous one has been completed
+
+const textIn = fs.readFileSync(path.join(__dirname, 'files', 'input.txt'), 'utf8');
+    console.log(textIn);
+const textOut = `This is what I think about programming: ${textIn}
+Timestamp: ${Date.now()}`;
+fs.writeFileSync(path.join(__dirname, 'files', 'output.txt'), textOut);
+console.log('File has been written.');
+
+// An example of the above but in a non-Blocking/asynchronous way
+// These lines are not going to wait in line. They're going to be executed
+// as soon as they're ready to go regardless of the previous line(s)
+// being ready
+// This is also an example of callback heck and is very common in Node.
+// I also liked using the contents of the data1 argument to determine
+// the .txt file to read and output (rpg_doc.txt in this case) just
+// to show how much freedom we have when using variables
+// What the below code will output will be in the reverse order
+// due to how asynchronous code is interpreted.
+// We'll get the 'Reading the file...' message prior to the reading
+// and output of the file that's being read because the action
+// of reading and ouputting take slonger than a simple console.log().
+
+fs.readFile(path.join(__dirname, 'files', 'start.txt'), 'utf-8', (err, data1) => {
+    fs.readFile(path.join(__dirname, 'files', `${data1}.txt`), 'utf-8', (err, data2) => {
+        console.log(data2);
+    });
+});
+console.log(`Reading the file rpg_doc.txt...`);
 
 //Stop doing stuff if there is an uncaught error
 
